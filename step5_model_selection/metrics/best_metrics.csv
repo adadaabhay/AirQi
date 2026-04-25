@@ -1,0 +1,8 @@
+metric,value
+MAE,19.633161865295122
+RMSE,28.83201181226673
+R2 Score,0.8186424922748431
+Selected Model,Stacked_Ensemble
+Rows Used,486
+Train Rows,388
+Test Rows,98

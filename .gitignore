@@ -1,0 +1,47 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.codex
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Local-only data caches
+data/
+*.sqlite3
+*.db
+feature.zip
+
+# Keep project evidence files inside tracked project folders
+!step1_data_collection/**/*.csv
+!step2_data_prep/**/*.csv
+!step3_data_preprocessing/**/*.csv
+!step3_data_preprocessing/**/*.xlsx
+!step4_eda/**/*.csv
+!step5_model_selection/**/*.csv
+!step5_model_selection/**/*.pkl
+!dual_dataset_steps_2_to_5/**/*.csv
+!dual_dataset_steps_2_to_5/**/*.xlsx
+!dual_dataset_steps_2_to_5/**/*.pkl
+
+# VSCode
+.vscode/
+
+# Mac / Linux
+.DS_Store
+*.swp

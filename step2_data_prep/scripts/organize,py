@@ -1,0 +1,60 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder
+from sklearn.impute import SimpleImputer
+
+# 1. Load Data
+df = pd.read_csv('../../step1_data_collection/raw/india_aqi_21k.csv')
+
+# --- CLEANING BASICS ---
+df = df.drop_duplicates()
+# Standardize text
+for col in ["country", "state", "city", "station", "pollutant_id"]:
+    df[col] = df[col].str.strip().str.title()
+# Pivot to get columns
+df_pivot = df.pivot_table(index=['state', 'city', 'station', 'latitude', 'longitude'],
+                          columns='pollutant_id',
+                          values='avg_value').reset_index()
+
+# --- DEFINE YOUR GOAL ---
+# We assume you want to predict 'Pm2.5' (The Target)
+target_col = 'Pm2.5'
+# The Features are everything else (e.g., NO2, SO2, CO, PM10)
+feature_cols = [c for c in df_pivot.columns if c not in ['state', 'city', 'station', 'latitude', 'longitude', target_col]]
+
+# --- HANDLING MISSING VALUES & OUTLIERS ---
+imputer = SimpleImputer(strategy='median')
+# Apply to both target and features to fix holes in data
+all_cols = feature_cols + [target_col]
+df_pivot[all_cols] = imputer.fit_transform(df_pivot[all_cols])
+
+# Cap Outliers (Winsorization) to keep data valid
+for col in all_cols:
+    upper = df_pivot[col].quantile(0.95)
+    lower = df_pivot[col].quantile(0.05)
+    df_pivot[col] = np.clip(df_pivot[col], lower, upper)
+
+# --- THE CRITICAL STEP: MIXED SCALING ---
+
+# A. NORMALIZE FEATURES (Inputs -> 0 to 1)
+# Models love small inputs. We use Log Transform + MinMax Scaler
+df_pivot[feature_cols] = np.log1p(df_pivot[feature_cols]) 
+scaler = MinMaxScaler()
+df_pivot[feature_cols] = scaler.fit_transform(df_pivot[feature_cols])
+
+# B. DO NOT NORMALIZE TARGET (Output -> Real Values > 1)
+# We leave 'Pm2.5' as is (e.g., 100, 200). 
+# This ensures your model output is human-readable immediately.
+
+# --- ENCODE CATEGORICAL DATA ---
+le = LabelEncoder()
+df_pivot['state_encoded'] = le.fit_transform(df_pivot['state'])
+df_pivot['city_encoded'] = le.fit_transform(df_pivot['city'])
+
+# Save
+df_pivot.to_csv('../outputs/india_aqi_training_ready1.csv', index=False)
+
+print("✅ Data Prepared!")
+print(f"Features (Scaled 0-1): {feature_cols}")
+print(f"Target (Kept Real > 1): {target_col}")
+print(df_pivot[[target_col] + feature_cols[:2]].head())
