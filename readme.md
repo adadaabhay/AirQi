@@ -1,6 +1,6 @@
 # AIRQI
 
-AIRQI is a professional end-to-end air-quality analytics project organized as a five-step workflow: data collection, problem definition, preprocessing, exploratory data analysis, and model selection. The final objective is to predict `PM2.5` concentration from pollutant and location-derived features using regression models, supported by reproducible notebooks, exported metrics, plots, and an open-source dashboard.
+AIRQI is a professional end-to-end air-quality analytics project organized as a five-step workflow: data collection, problem definition, preprocessing, exploratory data analysis, and model selection. The final objective is to predict `PM2.5` concentration from pollutant and location-derived features using regression models, supported by reproducible notebooks, exported metrics, plots, and an open-source dashboard. 
 
 ## Project Goal
 
